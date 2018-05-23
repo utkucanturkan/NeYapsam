@@ -1,0 +1,70 @@
+﻿@model PagedList.IPagedList<WebNeYapsam.Models.ListTitleViewModelWeb>
+@using PagedList.Mvc;
+<div class="c-content-blog-post-card-1-grid">
+    <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-6">
+                    <div class="c-content-blog-post-card-1 c-option-2 c-bordered">
+                        <div class="c-body">
+                            <div class="c-title c-font-bold c-font-uppercase">
+                                <!-- Başlıklar uzunluklarına göre biçimleniyor -->
+
+                                @if (item.Name.Length > 55)
+                                {
+                                    @Html.ActionLink(item.Name.Substring(0, 55) + " ...", "Index", "Title", new { area = "", TitleId = item.Id, CategoryId = item.Category.Id }, null)
+
+                                }
+                                else if (item.Name.Length < 35)
+                                {
+                                    @Html.ActionLink(item.Name, "Index", "Title", new { area = "", TitleId = item.Id, CategoryId = item.Category.Id }, null)
+                                    <br />
+                                    <br />
+                                }
+                                else
+                                {
+                                    @Html.ActionLink(item.Name, "Index", "Title", new { area = "", TitleId = item.Id, CategoryId = item.Category.Id }, null)
+
+                                }
+                            </div>
+                            <div class="c-author">
+                                Yazar <a href="#"><span class="c-font-uppercase">@item.User.UserName</span></a>
+                                / <span class="c-font-uppercase">@item.CreatedDate.ToShortDateString()</span>
+                            </div>
+                            <div class="c-panel">
+                                <div class="c-comments">
+                                    <a href="#"><i class="icon-eye"></i> @item.ViewCount görüntülenme</a>
+                                </div>
+                                <div class="c-comments">
+                                    <a href="#"><i class="icon-speech"></i> @item.AdviseCount tavsiye</a>
+                                </div>
+                            </div>
+                            <p>
+                                @if (item.Description.Length > 100)
+                                {
+                                    @item.Description.Substring(0,100) <text>...</text>
+                                }
+                                else if (item.Description.Length < 50)
+                                {
+                                    @item.Description
+                                    <br />
+                                    <br />
+                                }
+                                else
+                                {
+                                    @item.Description
+                                    <br />
+
+                                }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+</div>
+    <div class="c-pagination">
+        <ul class="c-content-pagination c-theme">
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+        </ul>
+    </div>
+</div>

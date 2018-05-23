@@ -1,0 +1,160 @@
+﻿@model IEnumerable<WebNeYapsam.Models.ListComplaintViewModelPanel>
+@using WebNeYapsam.Models;
+
+@{
+    ViewBag.Title = "Şikayetler";
+}
+
+@section styles{
+    <link rel="stylesheet" href="~/vendor/datatables.net-bs/css/dataTables.bootstrap.min.css" />
+}
+
+@section scripts{
+    <script src="~/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script>
+        $(function () {
+            $('#complaintsTable').dataTable();
+        });
+    </script>
+}
+
+<!--TITLE SECTION-->
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <a class="small-header-action" href="#">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
+
+            <div id="hbreadcrumb" class="pull-right m-t-lg">
+                <ol class="hbreadcrumb breadcrumb">
+                    <li>@Html.ActionLink("Panel", "Index", "Home")</li>
+                    <li class="active">
+                        <span>Şikayetler</span>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="font-light m-b-xs">
+                Şikayetler
+            </h2>
+            <small>Kullanıcılar tarafından oluşturulan şikayet listesi</small>
+        </div>
+    </div>
+</div>
+<!--TITLE SECTION-->
+
+<div class="content animate-panel">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="hpanel">
+                <div class="panel-body">
+
+                    <ul class="mailbox-list">
+                        <li class="active">
+                            <a href="#">
+                                <span class="pull-right">@Model.Count().ToString()</span>
+                                <i class="fa fa-envelope"></i> Şikayetler
+                            </a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <ul class="mailbox-list">
+                        <li>
+                            <a href="#"><i class="fa fa-square text-danger"></i> Hakaret</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-square text-warning"></i> Siyasi</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-square text-success"></i> Pornografik İçerik</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-square text-info"></i> Irkçılık</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-square text-primary"></i> Yanlış Kategori / Diğer</a>
+                        </li>
+                    </ul>
+                    <hr>
+                    <ul class="mailbox-list">
+                        <li>
+                            <a href="#"><i class="fa fa-info-circle"></i> NeYapsam v1.0</a>
+                        </li>
+                    </ul>
+
+
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="hpanel">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12 m-b-md">
+                            <div class="btn-group">
+                                <button class="btn btn-default btn-sm"><i class="fa fa-refresh"></i> Yenile</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="complaintsTable" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı</th>
+                                    <th>Şikayet Tür</th>
+                                    <th>Şikayet Edilen Veri Tür</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (ListComplaintViewModelPanel item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="#">@item.UserName</a>
+                                        </td>
+                                        @{
+                                            string labelType = "primary";
+                                            switch (item.ComplaintType)
+                                            {
+                                                case ComplaintType.Hakaret:
+                                                    labelType = "danger";
+                                                    break;
+                                                case ComplaintType.Siyasi:
+                                                    labelType = "warning";
+                                                    break;
+                                                case ComplaintType.Irkcılık:
+                                                    labelType = "info";
+                                                    break;
+                                                case ComplaintType.Pornografik:
+                                                    labelType = "success";
+                                                    break;
+                                                default:
+                                                    labelType = "primary";
+                                                    break;
+                                            }
+                                        }
+                                        <td><span class="label label-@labelType">@item.ComplaintType.ToString()</span></td>
+                                        <td class="text-right mail-date">@item.DataType</td>
+                                        <td>
+                                            @Html.ActionLink("Detay", "Detail", "Complaint", new { area = "Panel", id = item.Id }, new { @class = "btn btn-danger btn-xs" })
+                                        </td>
+
+                                    </tr>
+                                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <i class="fa fa-eye"> </i> @Model.Count().ToString()
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

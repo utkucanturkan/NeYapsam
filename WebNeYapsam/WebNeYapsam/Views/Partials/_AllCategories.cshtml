@@ -1,0 +1,35 @@
+﻿@using WebNeYapsam.Models
+<div class="modal fade c-content-login-form" id="AllCategories-form" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content c-square">
+            <div class="modal-header c-no-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="c-content-title-1 c-title-md c-margin-b-20 clearfix">
+                    <h3 class="c-center c-font-uppercase c-font-bold">Tüm Kategoriler</h3>
+                    <div class="c-line-center c-theme-bg">
+                    </div>
+                </div>
+                @using (ApplicationDbContext db = new ApplicationDbContext())
+                {
+                    Category Category = new Category();
+
+                    <div class="c-content-ver-nav">
+
+                        <ul class="c-menu c-arrow-dot1 c-theme">
+
+                            @foreach (var item in Category.List().OrderBy(x => x.Name))
+                            {
+                                <li>
+                                    <a href="@Url.Action("Index", "Home", new { area = "", CategoryId = item.Id })">@item.Name (@item.TitleCount)</a>
+                                </li>
+                            }
+
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

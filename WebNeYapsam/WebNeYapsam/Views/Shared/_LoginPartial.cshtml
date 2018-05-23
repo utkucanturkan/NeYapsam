@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    <li>
+        <a href="javascript:;" data-toggle="modal" data-target="#newTitle-form" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-white c-btn-circle c-btn-uppercase c-btn-sbold"><i class="icon-plus"></i> Yeni Başlık Oluştur</a>
+    </li>
+    <li class="c-menu-type-classic">
+        <a href="#" class="c-link dropdown-toggle">Hoşgeldin @User.Identity.GetUserName()</a>
+        <ul class="dropdown-menu c-menu-type-classic c-pull-left">
+            <li>
+                @Html.ActionLink("Profilim", "Page", "User", new { area = "Panel", name = User.Identity.GetUserName() }, null)
+            </li>
+            <li>
+                @Html.ActionLink("Çıkış", "LogOff", "Account", new { area = "Person" }, null)
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <li>
+        <a href="@Url.Action("Login","Account",new { area = "Person" })" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-white c-btn-circle c-btn-uppercase c-btn-sbold"><i class="icon-user"></i> Giriş Yap</a>
+    </li>
+}

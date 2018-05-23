@@ -1,0 +1,354 @@
+﻿@model WebNeYapsam.Controllers.TitleDetailViewModel
+@using PagedList.Mvc;
+@using Microsoft.AspNet.Identity;
+
+@section styles{
+    <style type="text/css">
+        #setEvaluation {
+            cursor: pointer;
+        }
+
+        .media {
+            border: 1px solid #eeeeee;
+        }
+
+        .media-body {
+            padding: 10px 0px;
+        }
+
+        .media-left {
+            padding: 10px;
+        }
+    </style>
+}
+
+@section breadcrumb{
+    <div class="c-layout-breadcrumbs-1 c-fonts-uppercase c-fonts-bold c-bordered c-bordered-both">
+        <div class="container">
+            <ul class="c-page-breadcrumbs c-theme-nav c-pull-left c-fonts-regular">
+                <li>
+                    <a href="@Url.Action("Index","Home")">Home</a>
+                </li>
+                <li>
+                    /
+                </li>
+                <li>
+                   Başlık
+                </li>
+                <li>
+                    /
+                </li>
+                <li class="c-state_active">
+                    @Model.GetTitleViewModelWeb.Name
+                </li>
+            </ul>
+        </div>
+    </div>
+}
+
+@section scripts{
+    @if (Request.IsAuthenticated)
+    {
+        <script>
+            function evaluationissucces(element) {
+                var count = parseInt(element.children("#count").text(), 10);
+                var eid = element.data("id");
+                var eevaluation = element.data("evaluation");
+                var clicked = element.attr("clicked");
+                if (clicked == "false") {
+                    $("a").each(function () {
+                        var id = $(this).data("id");
+                        var evaluation = $(this).data("evaluation");
+                        if (id == eid && evaluation != eevaluation) {
+                            $(this).find("i").css("color", "");
+                            $(this).find("i").css("color", "#8f9ba6");
+                            var _count = parseInt($(this).children("#count").text(), 10);
+                            if (_count > 0) {
+                                _count -= 1;
+                            }
+                            $(this).children("#count").text(_count.toString());
+                            $(this).attr("clicked", "false");
+                        }
+                    });
+                    element.find("i").css("color", "red");
+                    count += 1;
+                    element.attr("clicked", "true");
+                } else {
+                    element.find("i").css("color", "#8f9ba6");
+                    if (count > 0) {
+                        count -= 1;
+                    }
+                    element.attr("clicked", "false");
+                }
+                element.children("#count").text(count.toString());
+            }
+
+            $(document).on("click", "#setEvaluation", function () {
+                var btn = $(this);
+                $.DataEvaluationModel = {
+                    "user": $(this).data("user"),
+                    "id": $(this).data("id"),
+                    "datatype": $(this).data("datatype"),
+                    "evaluation": $(this).data("evaluation")
+                };
+                $.ajax({
+                    type: "POST",
+                    dataType: 'json',
+                    url: '@Url.Action("Evaluation", "Title")',
+                    data: $.DataEvaluationModel,
+                    success: function (data) {
+                        if (data.isSuccess) {
+                            evaluationissucces(btn);
+                        }
+                        else {
+                            swal("İşlem Başarısız!", "", "error");
+                        }
+                    },
+                    error: function (error) {
+                        swal("Hata!", "Sistem ile bağlantı sorunu oluştu.", "error");
+                    }
+                });
+            });
+
+            $(document).on("click", "#setComplaint", function () {
+                $("#DataId").val($(this).data("id"));
+
+            });
+
+            $(document).ready(function () {
+                $("#AddAdvice").click(function () {
+                    $.Description = $("#description").val();
+                    $.TitleId = $("#titleId").val();
+                    $.UserId = $("#userId").val();
+                    $.AddAdviseViewModelWeb = {
+                        "description": $.Description,
+                        "TitleId": $.TitleId,
+                        "UserId": $.UserId
+                    };
+                    $.ajax({
+                        type: "POST",
+                        dataType: 'json',
+                        url: '@Url.Action("Add", "Advise")',
+                        data: $.AddAdviseViewModelWeb,
+                        success: function (data) {
+                            if (data.isSuccess) {
+                                $(".noadvice").remove();
+                                $(".c-comment-list").append("<div class='media'><div class='media-left'><a href='#'><img class='media-object' alt='' src='../Images/" + data.userImage + "'></a></div><div class='media-body'><h4 class='media-heading'><a href='#' class='c-font-bold'>@User.Identity.GetUserName()</a> / <span class='c-date'>@DateTime.Now.ToShortDateString()</span></h4>" + $.Description + "</div><div class='c-panel' style='border: none; border-top: 1px solid #eeeeee;'><div class='c-comments' style='float:left;'><a href='#'><i class='icon-ban'></i> Sil</a></div></div>");
+                                $('#description').val("");
+                            }
+                            else {
+                                swal("İşlem Başarısız!", "Tavsiye Eklenemedi!", "error");
+                            }
+                        },
+                        error: function (error) {
+                            swal("Hata!", "Sistem ile bağlantı sorunu oluştu.", "error");
+                        }
+                    });
+                });
+            });
+        </script>
+    }
+}
+
+@if (Request.IsAuthenticated && Model.GetTitleViewModelWeb.User.Id != User.Identity.GetUserId())
+{
+    @Html.Partial("~/Views/Partials/_ComplaintPartial.cshtml")
+}
+
+<input id="titleId" type="hidden" value="@Model.GetTitleViewModelWeb.Id" />
+<input id="userId" type="hidden" value="@User.Identity.GetUserId()" />
+
+<div class="c-content-blog-post-1-view">
+    <div class="c-content-blog-post-1">
+        <div class="c-title c-font-bold c-font-uppercase">
+            <a href="#">@Model.GetTitleViewModelWeb.Name</a>
+        </div>
+        <div class="c-panel c-margin-b-30">
+            <div class="c-author">
+                <a href="#">Yazar <span class="c-font-uppercase">@Model.GetTitleViewModelWeb.User.UserName</span></a>
+            </div>
+            <div class="c-date">
+                / <span class="c-font-uppercase">@Model.GetTitleViewModelWeb.CreatedDate.ToShortDateString()</span>
+            </div>
+            <ul class="c-tags c-theme-ul-bg">
+                <li>
+                    @Model.GetTitleViewModelWeb.Category.Name
+                </li>
+            </ul>
+            <div class="c-comments">
+                <a href="#"><i class="icon-speech"></i> @Model.GetTitleViewModelWeb.AdviseCount tavsiye</a>
+            </div>
+            <div class="c-comments">
+                <a href="#"><i class="icon-eye"></i> @Model.GetTitleViewModelWeb.ViewCount görüntülenme</a>
+            </div>
+        </div>
+        <div class="c-desc">
+            <p>
+                @if (!String.IsNullOrEmpty(Model.GetTitleViewModelWeb.Image))
+                {
+                    <img src="@Model.GetTitleViewModelWeb.Image" style="max-width:500px;max-height:500px;">
+                    <br />
+                    <br />
+                }
+
+                @Model.GetTitleViewModelWeb.Description
+            </p>
+            <hr />
+
+        </div>
+
+
+        @*Kullanıcı üye ve kendi başlığı değil ise başlık değerlendirmesi yapabilir.*@
+        @if (Request.IsAuthenticated)
+            {
+            <div class="c-panel c-margin-b-30">
+                @if (Model.GetTitleViewModelWeb.User.UserName != User.Identity.GetUserName())
+                {
+                    string color = "color: red;";
+                    bool lclicked = false, dlclicked = false;
+                    string likecolor = "", dislikecolor = "";
+                    switch (Model.GetTitleViewModelWeb.isEvaluated)
+                    {
+                        case WebNeYapsam.Models.EvaluationType.Dislike:
+                            dlclicked = true;
+                            dislikecolor = color;
+                            break;
+                        case WebNeYapsam.Models.EvaluationType.Like:
+                            lclicked = true;
+                            likecolor = color;
+                            break;
+                    }
+                    <div class="c-comments">
+                        @if (Model.GetTitleViewModelWeb.isComplainted)
+                        {
+                            <a href="#"><i class="icon-flag"></i> Şikayetiniz tarafımıza iletişmiştir.</a>
+                        }
+                        else
+                        {
+                            <a id="setComplaint" href="javascript:;" data-toggle="modal" data-target="#newComplaint-form" data-id="@Model.GetTitleViewModelWeb.Id"><i class="icon-flag"></i> Şikayet</a>
+                        }
+                    </div>
+                    <div class="c-comments" style="float:left;">
+                        <a id="setEvaluation" clicked="@lclicked.ToString().ToLower()" data-user="@Model.GetTitleViewModelWeb.User.UserName" data-id="@Model.GetTitleViewModelWeb.Id" data-datatype="title" data-evaluation="like"><i class="icon-like" style="@likecolor"></i> <span id="count">@Model.GetTitleViewModelWeb.LikeCount</span></a>
+                    </div>
+                    <div class="c-comments" style="float:left;">
+                        <a id="setEvaluation" clicked="@dlclicked.ToString().ToLower()" data-user="@Model.GetTitleViewModelWeb.User.UserName" data-id="@Model.GetTitleViewModelWeb.Id" data-datatype="title" data-evaluation="dislike"><i class="icon-dislike" style="@dislikecolor"></i> <span id="count">@Model.GetTitleViewModelWeb.DisLikeCount</span></a>
+                    </div>
+                }
+                else
+                {
+                    <div class="c-comments" style="float:left;">
+                        <a href="@Url.Action("Edit", "Title", new { area = "Panel", id = Model.GetTitleViewModelWeb.Id })"><i class="icon-settings"></i> Düzenle</a>
+                    </div>
+                }
+            </div>
+        }
+
+
+        <div class="c-comments">
+            <div class="c-content-title-1">
+                <h3 class="c-font-uppercase c-font-bold">Tavsiyeler </h3>
+                <div class="c-line-left">
+                </div>
+            </div>
+            <div class="c-comment-list">
+                @if (Request.IsAuthenticated)
+                {
+                    if (Model.ListAdviseViewModelWeb.Count > 0)
+                    {
+                        foreach (var item in Model.ListAdviseViewModelWeb)
+                        {
+
+                            <div class="media">
+                                <div class="media-left">
+                                    <a href="#">
+                                        <img class="media-object" alt="" src="~/Images/@item.UserImage">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <h4 class="media-heading"><a href="#" class="c-font-bold">@item.UserName</a> / <span class="c-date">@item.CreatedDate.ToShortDateString()</span></h4>
+                                    @item.Description
+                                </div>
+
+                                <div class="c-panel" style="border-top: 1px solid #eeeeee;">
+
+                                    @*Kullanıcı üye ve kendi tavsiyesi değil ise tavsiye değerlendirmesi yapabilir.*@
+
+                                    @if (item.UserName != User.Identity.GetUserName())
+                                    {
+                                        string color = "color:red;";
+                                        bool lclicked = false, dlclicked = false;
+                                        string adviselikecolor = "", advisedislikecolor = "";
+                                        switch (item.isEvaluated)
+                                        {
+                                            case WebNeYapsam.Models.EvaluationType.Dislike:
+                                                advisedislikecolor = color;
+                                                break;
+                                            case WebNeYapsam.Models.EvaluationType.Like:
+                                                adviselikecolor = color;
+                                                break;
+                                        }
+
+                                        <div class="c-comments" style="float:left;">
+                                            <a id="setEvaluation" clicked="@lclicked.ToString().ToLower()" data-user="@item.UserName" data-id="@item.Id" data-datatype="advise" data-evaluation="like"><i class="icon-like" style="@adviselikecolor"></i> <span id="count">@item.LikeCount</span></a>
+                                        </div>
+                                        <div class="c-comments" style="float:left;">
+                                            <a id="setEvaluation" clicked="@dlclicked.ToString().ToLower()" data-user="@item.UserName" data-id="@item.Id" data-datatype="advise" data-evaluation="dislike"><i class="icon-dislike" style="@advisedislikecolor"></i> <span id="count">@item.DisLikeCount</span></a>
+                                        </div>
+                                        <div class="c-comments">
+                                            @if (item.isComplainted)
+                                            {
+                                                <a href="#"><i class="icon-flag"></i> Şikayetiniz tarafımıza iletişmiştir.</a>
+                                            }
+                                            else
+                                            {
+                                                <a id="setComplaint" href="javascript:;" data-toggle="modal" data-target="#newComplaint-form" data-id="@item.Id"><i class="icon-flag"></i> Şikayet</a>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="noadvice">Tavsiye bulunmamaktadır.</p>
+                    }
+                }
+                else
+                {
+                    <p>Sitemizden daha fazla yararlanmak için <a href="@Url.Action("Login","Account",new { area = "Person" })">Giriş</a> yapınız!</p>
+                }
+            </div>
+
+            @if (Request.IsAuthenticated)
+            {
+                <div class="c-pagination">
+                    <ul class="c-content-pagination c-theme">
+                        @Html.PagedListPager(Model.ListAdviseViewModelWeb, page => Url.Action("Index", new { page = page, TitleId = Model.GetTitleViewModelWeb.Id }), PagedListRenderOptions.ClassicPlusFirstAndLast)
+                    </ul>
+                </div>
+            }
+
+            <div class="c-content-title-1">
+                <h3 class="c-font-uppercase c-font-bold">Tavsiyede Bulun</h3>
+                <div class="c-line-left">
+                </div>
+            </div>
+            @*Kullanıcı üye ise tavsiye eklemebilir.*@
+            @if (Request.IsAuthenticated)
+            {
+                <div class="form-group">
+                    <textarea id="description" rows="8" name="message" placeholder="Tavsiyenizi giriniz ..." class="form-control c-square" minlength="5" maxlength="500" required></textarea>
+                </div>
+                <div class="form-group">
+                    <button id="AddAdvice" class="btn c-theme-btn c-btn-uppercase btn-md c-btn-sbold btn-block c-btn-square">Gönder</button>
+                </div>
+            }
+            else
+            {
+                <p>Sitemizden daha fazla yararlanmak için <a href="@Url.Action("Login","Account",new { area = "Person" })">Giriş</a> yapınız!</p>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,29 @@
+﻿@{ Layout = null;}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>NeYapsam</title>
+    @Styles.Render("~/Panel/vendor/css")
+    @Styles.Render("~/Panel/style")
+</head>
+<body class="blank">
+    <div class="splash"> <div class="color-line"></div><div class="splash-title"><h1>NeYapsam</h1><p>Sayfa Yükleniyor.</p><div class="spinner"> <div class="rect1"></div> <div class="rect2"></div> <div class="rect3"></div> <div class="rect4"></div> <div class="rect5"></div> </div> </div> </div>
+    <div class="color-line"></div>
+    <div class="error-container">
+        <i class="pe-7s-way text-success big-icon"></i>
+        <h1>404</h1>
+        <strong>Sayfa Bulunamadı</strong>
+        <p>
+            Üzgünüz, işleminizi beklenmedik hata yüzünden gerçekleştiremedik.
+        </p>
+        @Html.ActionLink("Anasayfaya geri dön", "Index", "Home", new { area = "" }, new { @class = "btn btn-xs btn-success" })
+    </div>
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Panel/vendor/script")
+    @Scripts.Render("~/Panel/script")
+</body>
+</html>

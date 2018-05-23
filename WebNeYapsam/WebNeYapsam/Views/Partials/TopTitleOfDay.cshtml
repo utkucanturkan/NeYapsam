@@ -1,0 +1,39 @@
+﻿@using WebNeYapsam.Models;
+@{
+    List<ListTitleViewModelWeb> model = new List<ListTitleViewModelWeb>();
+    Title title = new Title();
+    if (Model is int)
+    {
+        model = title.ListTopOfDay(Model);
+    }
+    else
+    {
+        model = title.ListTopOfDay(null);
+    }
+}
+<ul class="c-content-recent-posts-1">
+    @if (model.Count > 0)
+    {
+        foreach (var item in model)
+        {
+            <li>
+                <div class="c-post">
+                    <a href="@Url.Action("Index","Title",new { area = "", TitleId = item.Id })" class="c-title">
+                        @item.Name
+                    </a>
+                    <div class="c-date">
+                        @item.User.UserName
+                    </div>
+                </div>
+            </li>
+        }
+    }
+    else
+    {
+        <li>
+            <div class="c-post">
+                <p>Başlık bulunmamaktadır.</p>
+            </div>
+        </li>
+    }
+</ul>

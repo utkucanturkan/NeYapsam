@@ -1,0 +1,181 @@
+﻿@model WebNeYapsam.Models.EditTitleViewModelPanel
+@using WebNeYapsam.Models
+@{
+    ViewBag.Title = Model.Name;
+}
+@section styles{
+    <link rel="stylesheet" href="~/vendor/datatables.net-bs/css/dataTables.bootstrap.min.css" />
+}
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/vendor/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/vendor/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+    <script>
+        $(function () {
+            $('#advicesTable').dataTable();
+
+            $('#btnDeleteAdvise').click(function () {
+                var id = $(this).data("itemid");
+
+                swal({
+                    title: "Emin misiniz?",
+                    text: "Tavsiye silmek üzeresiniz!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Evet, son kararım!",
+                    cancelButtonText: "Hayır, kapat!",
+                    closeOnConfirm: false,
+                    closeOnCancel: true
+                },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                $.ajax({
+                                    type: "POST",
+                                    dataType: 'json',
+                                    url: '@Url.Action("DeleteAdvise", "Title")',
+                                    data: { id: id },
+                                    success: function (data) {
+                                        if (data.isSuccess) {
+                                            swal({
+                                                title: "İşlem Başarılı!",
+                                                text: "Tavsiye silindi.",
+                                                type: "success"
+                                            }, function () {
+                                                location.reload();
+                                            });
+                                        } else {
+                                            swal("İşlem Başarısız!", "Tavsiye Silinemedi.", "error");
+                                        }
+                                    },
+                                    error: function (error) {
+                                        swal("Hata!", "Sistem ile bağlantı sorunu oluştu.", "error");
+                                    }
+                                });
+                            }
+                        });
+            });
+        });
+    </script>
+}
+<!--TITLE SECTION-->
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <a class="small-header-action" href="#">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
+
+            <div id="hbreadcrumb" class="pull-right m-t-lg">
+                <ol class="hbreadcrumb breadcrumb">
+                    <li>@Html.ActionLink("Panel", "Index", "Home")</li>
+                    <li class="active">
+                        <span>@Model.Name</span>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="font-light m-b-xs">
+                @Model.Name
+            </h2>
+            <small>@Model.Name düzenle</small>
+        </div>
+    </div>
+</div>
+<!--TITLE SECTION-->
+
+<div class="content animate-panel">
+    <div class="row social-board">
+        <div class="col-lg-12">
+            <div class="hpanel hgreen">
+                <div class="panel-body">
+                    @using (Html.BeginForm("Edit", "Title", new { area = "Panel" }, FormMethod.Post, new { @role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.UserName)
+                        <div class="media social-profile clearfix">
+                            <div class="media-body">
+                                <span class="font-bold">@Model.Name</span>
+                                <small class="text-muted" style="display:block;">@Model.ViewCount görüntülenme / @Model.Point puan / @Model.LikeCount like / @Model.DisLikeCount dislike</small>
+                            </div>
+                        </div>
+
+                        <div class="social-content m-t-md">
+                            <div class="form-group">
+                                @Html.EditorFor(model => model.MediaURL, new { htmlAttributes = new { @class = "form-control", @placeholder = "Media URL" } })
+                                @Html.ValidationMessageFor(model => model.MediaURL, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group">
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Başlık İçerik" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(model => model.State, new { @class = "i-checks" }) Aktif / Pasif
+                            @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            <input type="submit" value="Kaydet" class="btn btn-success" />
+                            @if (User.IsInRole("Admin"))
+                            {
+                                @Html.ActionLink("Sil", "Delete", "Title", new { area = "Panel", id = Model.Id }, new { @class = "btn btn-danger" })
+                            }
+                        </div>
+                    }
+                </div>
+                <div class="panel-footer">
+                    @if (Model.Advices.Count <= 0)
+                    {
+                        <div class="social-talk">
+                            <div class="media social-profile clearfix">
+                                <div class="media-body">
+                                    <span class="font-bold">Tavsiye bulunmamaktadır.</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <table id="advicesTable" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr><th>Tavsiyeler</th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (ListAdviseViewModelPanel item in Model.Advices)
+                {
+                                    <tr>
+                                        <td>
+                                            <div class="social-talk" style="margin:0px;">
+                                                <div class="media social-profile clearfix">
+                                                    <div class="media-body">
+                                                        <span class="font-bold">@item.Description</span>
+                                                        <small class="text-muted"></small>
+                                                        <div class="social-content">
+                                                            @item.Point puan / @item.LikeCount like / @item.DisLikeCount dislike
+                                                            @if (User.IsInRole("Admin"))
+                    {
+                                                                <div class="m-t-md" style="margin-top:10px;">
+                                                                    <button id="btnDeleteAdvise" class="btn btn-danger btn-xs" data-itemid="@item.Id">Sil</button>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

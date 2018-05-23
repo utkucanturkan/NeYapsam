@@ -1,0 +1,30 @@
+﻿@using WebNeYapsam.Models;
+@{
+    List<ListCategoryViewModelShared> model = new List<ListCategoryViewModelShared>();
+    Category category = new Category();
+    model = category.ListTop7();
+    int CategoryId;
+}
+
+<div class="c-content-ver-nav">
+    <div class="c-content-title-1 c-theme c-title-md">
+        <h3 class="c-font-bold c-font-uppercase">Kategoriler</h3>
+        <div class="c-line-left c-theme-bg">
+        </div>
+    </div>
+    <ul class="c-menu c-arrow-dot1 c-theme">
+        <li>
+            <a href="@Url.Action("Index", "Home", new { area = "" })">Tüm Kategorileri Listele</a>
+        </li>
+        @foreach (var item in model)
+        {
+            <li>
+                <a href="@Url.Action("Index", "Home", new { area = "", CategoryId = item.Id })">@item.Name (@item.TitleCount)</a>
+        </li>
+        }
+        <li>
+            <a href="javascript:;" data-toggle="modal" data-target="#AllCategories-form">Tüm Kategorileri Getir</a>
+        </li>
+    </ul>
+</div>
+

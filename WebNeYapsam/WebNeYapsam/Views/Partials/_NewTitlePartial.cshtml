@@ -1,0 +1,104 @@
+﻿@using WebNeYapsam.Models
+<div class="modal fade c-content-login-form" id="newTitle-form" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content c-square">
+            <div class="modal-header c-no-border">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="c-content-title-1 c-title-md c-margin-b-20 clearfix">
+                    <h3 class="c-center c-font-uppercase c-font-bold">Yeni Başlık</h3>
+                    <div class="c-line-center c-theme-bg">
+                    </div>
+                </div>
+
+                @using (ApplicationDbContext db = new ApplicationDbContext())
+                {
+                    ViewBag.Categories = db.Categories.OrderBy(x=>x.Name).Select(c => new SelectListItem()
+                    {
+                        Text = c.Name,
+                        Value = c.Id.ToString()
+                    }).ToList();
+                }
+
+                @using (Html.BeginForm("Add", "Title", new { area = "" }, FormMethod.Post, new { @class = "form-horizontal", @id = "NewTitleForm" }))
+                {
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    @Html.TextBox("Name", null, new { @class = "form-control c-square c-theme", @required = "required", @placeholder = "Başlık Ad" })
+                </div>
+                <div class="form-group">
+                    @Html.DropDownList("category", (List<SelectListItem>)ViewBag.Categories, htmlAttributes: new { @class = "form-control input-lg c-square" })
+                </div>
+                <div class="form-group">
+                    @Html.TextBox("Media", null, new { @class = "form-control c-square c-theme", @placeholder = "Media Url", @id = "Media" })
+                </div>
+                <div class="form-group">
+                    @Html.TextArea("Description", new { @class = "form-control c-square c-theme", @required = "required", @rows = 3, @placeholder = "İçerik" })
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Başlık Ekle" class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login" />
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#buton').click(function () {
+            var url = $("#Media").val();
+            if (url != "") {
+                function IsValidImageUrl(url, callback) {
+                    var img = new Image();
+                    img.onerror = function () { callback(url, false); }
+                    img.onload = function () { callback(url, true); }
+                    img.src = url
+
+                };
+                IsValidImageUrl(url, myCallback);
+                function myCallback(url, answer) {
+                    if (answer) {
+                        document.getElementById("NewTitleForm").submit();
+                  
+                    }
+                    else {
+                        swal("Başlık Eklenemedi!", "Media url adresi bir resim belirtmiyor.", "error");
+                    }
+                };
+            }
+            else
+            {
+                document.getElementById("NewTitleForm").submit();
+     
+            }
+        });
+    });
+
+    $("#NewTitleForm").validate({
+        rules: {
+            Name: {
+                required: true,
+                minlength: 10,
+                maxlength: 50
+            },
+            Description: {
+                required: true,
+                minlength: 10
+            }
+        },
+        messages: {
+            Name: {
+                required: "Gerekli Alan",
+                minlength: jQuery.validator.format("En az {0} karakter olmalıdır"),
+                maxlength: jQuery.validator.format("En çok {0} karakter olmalıdır")
+            },
+            Description: {
+                required: "Gerekli Alan",
+                minlength: jQuery.validator.format("En çok {0} karakter olmalıdır")
+            }
+        }
+    });
+
+
+</script>

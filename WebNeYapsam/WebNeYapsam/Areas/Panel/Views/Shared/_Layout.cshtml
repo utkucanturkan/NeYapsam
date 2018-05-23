@@ -1,0 +1,130 @@
+﻿@using Microsoft.AspNet.Identity
+@using WebNeYapsam.Classes
+<!DOCTYPE html>
+
+<html lang="en" class="loading loading-danger">
+<head>
+    <meta charset="utf-8">
+    <title>NeYapsam | @ViewBag.Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Panel/vendor/css")
+    @Styles.Render("~/Panel/style")
+    @RenderSection("styles", false)
+</head>
+<body class="fixed-navbar fixed-sidebar">
+    <div id="header">
+        <div class="color-line">
+        </div>
+        <div id="logo" class="light-version">
+            <span>
+                NeYapsam Panel
+            </span>
+        </div>
+        <nav role="navigation">
+            <div class="header-link hide-menu"><i class="fa fa-bars"></i></div>
+            <div class="small-logo">
+                <span class="text-primary">NeYapsam</span>
+            </div>
+            <form role="search" class="navbar-form-custom" method="post" action="#">
+                <div class="form-group">
+                    <input type="text" placeholder="Arama yap" class="form-control" name="search">
+                </div>
+            </form>
+            <div class="mobile-menu">
+                <button type="button" class="navbar-toggle mobile-menu-toggle" data-toggle="collapse" data-target="#mobile-collapse">
+                    <i class="fa fa-chevron-down"></i>
+                </button>
+                <div class="collapse mobile-navbar" id="mobile-collapse">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            @Html.ActionLink("Profil", "Page", "User", new { area = "Panel", name = User.Identity.GetUserName() }, null)
+                        </li>
+                        <li>
+                            @Html.ActionLink("Çıkış", "LogOff", "Account", new { area = "Person" }, null)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="navbar-right">
+                <ul class="nav navbar-nav no-borders">
+                    <li class="dropdown">
+                        <a href="@Url.Action("Index","Home", null)">
+                            <i class="pe-7s-upload pe-rotate-90"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <aside id="menu">
+        <div id="navigation">
+            <div class="profile-picture">
+                @Html.Partial("_LoginPartial")
+            </div>
+            <ul class="nav" id="side-menu">
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="active">
+                        @Html.ActionLink("Panel", "Index", "Home")
+                    </li>
+                    <li>
+                        @Html.ActionLink("Şikayetler", "List", "Complaint")
+                    </li>
+                    <li>
+                        <a href="#"><span class="nav-label">Kullanıcılar</span><span class="fa arrow"></span> </a>
+                        <ul class="nav nav-second-level">
+                            <li>@Html.ActionLink("Listele", "List", "User")</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><span class="nav-label">Rütbeler</span><span class="fa arrow"></span> </a>
+                        <ul class="nav nav-second-level">
+                            <li>@Html.ActionLink("Listele", "List", "Rank")</li>
+                            <li>@Html.ActionLink("Ekle", "Add", "Rank")</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><span class="nav-label">Başlıklar</span><span class="fa arrow"></span> </a>
+                        <ul class="nav nav-second-level">
+                            <li>@Html.ActionLink("Listele", "List", "Title")</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><span class="nav-label">Kategoriler</span><span class="fa arrow"></span> </a>
+                        <ul class="nav nav-second-level">
+                            <li>@Html.ActionLink("Listele", "List", "Category")</li>
+                            <li>@Html.ActionLink("Ekle", "Add", "Category")</li>
+                        </ul>
+                    </li>
+                }
+            </ul>
+        </div>
+    </aside>
+    <div id="wrapper">
+        @RenderBody()
+    </div>
+    @Scripts.Render("~/Panel/vendor/script")
+    @Scripts.Render("~/Panel/script")
+    @RenderSection("scripts", false)
+    @{
+        Result result = new Result();
+        string swallType = "success";
+        if (TempData["result"] != null)
+        {
+            result = (Result)TempData["result"];
+            swallType = (result.IsSuccess != true) ? "error" : "success";
+            TempData["result"] = null;
+            <script type="text/javascript">
+                $(function () {
+                    swal({
+                        title: "@result.Message",
+                        text: "@result.InnerMessage",
+                        type: "@swallType"
+                    });
+                });
+            </script>
+        }
+    }
+</body>
+</html>

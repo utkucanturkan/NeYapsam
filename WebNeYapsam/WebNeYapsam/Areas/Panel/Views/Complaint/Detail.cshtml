@@ -1,0 +1,123 @@
+﻿@model WebNeYapsam.Models.GetComplaintViewModelPanel
+@using WebNeYapsam.Models;
+@{
+    ViewBag.Title = "Şikayet Detay";
+}
+
+@section styles{
+}
+
+@section scripts{
+
+}
+
+<!--TITLE SECTION-->
+<div class="normalheader transition animated fadeIn">
+    <div class="hpanel">
+        <div class="panel-body">
+            <a class="small-header-action" href="#">
+                <div class="clip-header">
+                    <i class="fa fa-arrow-up"></i>
+                </div>
+            </a>
+
+            <div id="hbreadcrumb" class="pull-right m-t-lg">
+                <ol class="hbreadcrumb breadcrumb">
+                    <li>@Html.ActionLink("Panel", "Index", "Home")</li>
+                    <li class="active">
+                        <span>Şikayet Detay</span>
+                    </li>
+                </ol>
+            </div>
+            <h2 class="font-light m-b-xs">
+                Şikayet Detay
+            </h2>
+            <small>@Model.UserName tarafından oluşturulan şikayet detayı</small>
+        </div>
+    </div>
+</div>
+<!--TITLE SECTION-->
+
+<div class="content animate-panel">
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="hpanel email-compose">
+                <div class="panel-heading hbuilt">
+
+                    <div class="p-xs h4">
+                        Şikayet Detay
+
+                    </div>
+                </div>
+                <div class="border-top border-left border-right bg-light">
+                    <div class="p-m">
+                        <div>
+                            <span class="font-extra-bold">Şikayet Tür: </span>
+                            @Model.ComplaintType.ToString()
+                        </div>
+                        <div>
+                            <span class="font-extra-bold">Şikayet Eden: </span>
+                            <a href="#">@Model.UserName</a>
+                        </div>
+                        <div>
+                            @{
+                                string datatype = (Model.Data is Title) ? "Başlık" : "Tavsiye";
+                            }
+                            <span class="font-extra-bold">Şikayet Edilen @datatype sahibi: </span>
+                            @Model.ComplaintedUserName
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div>
+                        @{
+                            if (Model.Data is Title)
+                            {
+                                Title t = (Title)Model.Data;
+                                <h4>@t.Name</h4>
+
+                                <p>
+                                    @t.Descripton
+                                </p>
+                                if (!string.IsNullOrEmpty(t.MediaUrl))
+                                {
+                                    <p>
+                                        <a href="@t.MediaUrl" target="_blank">Media Görüntüle</a>
+                                    </p>
+                                }
+                            }
+                            else
+                            {
+                                <p>@Model.Data.Descripton</p>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="panel-footer text-right">
+                    <div class="btn-group">
+                        @if (Model.ComplaintType == ComplaintType.YanlısKategori && Model.Data is Title)
+                        {
+                            <a href="@Url.Action("Edit","Title", new { area = "Panel", id=Model.Data.Id })" class="btn btn-default"><i class="fa fa-glass"> Başlık Düzenle</i></a>
+                        }
+
+                        @using (Html.BeginForm("Confirm", "Complaint", new { area = "Panel" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("id", Model.Data.Id)
+                            <input type="submit" value="Onayla" class="btn btn-default" />
+                        }
+                        @using (Html.BeginForm("Delete", "Complaint", new { area = "Panel" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.Hidden("id", Model.Data.Id)
+                            <input type="submit" value="Sil" class="btn btn-default" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

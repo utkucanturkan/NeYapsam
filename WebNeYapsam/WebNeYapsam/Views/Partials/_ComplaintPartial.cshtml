@@ -1,0 +1,28 @@
+﻿@using WebNeYapsam.Models
+    <div class="modal fade c-content-login-form" id="newComplaint-form" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content c-square">
+                <div class="modal-header c-no-border">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="c-content-title-1 c-title-md c-margin-b-20 clearfix">
+                        <h3 class="c-center c-font-uppercase c-font-bold">Şikayet</h3>
+                        <div class="c-line-center c-theme-bg">
+                        </div>
+                    </div>
+                    @using (Html.BeginForm("Complaint", "Title", new { area = "" }, FormMethod.Post, new { @class = "form-horizontal", @id = "NewComplaintForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("DataId")
+                        <div class="form-group">
+                            @Html.DropDownList("ComplaintType", EnumHelper.GetSelectList(typeof(ComplaintType)),new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Gönder" class="btn c-theme-btn btn-md c-btn-uppercase c-btn-bold c-btn-square c-btn-login" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>

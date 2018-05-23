@@ -1,0 +1,45 @@
+﻿@using WebNeYapsam.Areas.Person.Models
+@model LoginViewModel
+
+<div class="login-container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="text-center m-b-md">
+                <h3>Üye Girişi</h3>
+                @*<small>This is the best app ever!</small>*@
+            </div>
+            <div class="hpanel">
+                <div class="panel-body">
+                    @using (Html.BeginForm("Login", "Account", new { area = "Person", ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.UserName, new { @class = "control-label" })
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Password, new { @class = "control-label" })
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(m => m.RememberMe, new { @class = "i-checks" })
+                            @Html.LabelFor(m => m.RememberMe)
+                        </div>
+
+                        <input type="submit" value="Giriş" class="btn btn-success btn-block" />
+                        @Html.ActionLink("Kayıt Ol", "Register", "Account", new { area = "Person" }, new { @class = "btn btn-default btn-block" })
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <strong>NeYapsam</strong> - Ah ne yapsam, ne yapsam <br /> 2016 Copyright OnkuSoftware
+        </div>
+    </div>
+</div>

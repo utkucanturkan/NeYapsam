@@ -1,0 +1,167 @@
+﻿@using WebNeYapsam.Classes;
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>NeYapsam | Anasayfa</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300italic,400italic,700italic,400,300,700&amp;subset=all' rel='stylesheet' type='text/css'>
+    @Styles.Render("~/Content/css")
+    @RenderSection("styles", false)
+    @Scripts.Render("~/Content/script")
+    @Scripts.Render("~/bundles/jqueryval")
+
+
+    @*@if (Request.IsAuthenticated)
+    {
+
+        <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+        <script>tinymce.init({ selector: '#Description' });</script>
+
+        @*<link href="~/vendor/markitup/skins/markitup/style.css" rel="stylesheet" />
+        <link href="~/vendor/markitup/sets/default/style.css" rel="stylesheet" />
+        <script src="~/vendor/markitup/jquery.markitup.js"></script>
+
+        <script src="~/vendor/markitup/sets/default/set.js"></script>
+
+        <script language="javascript">
+            $(document).ready(function () {
+                $('#Description').markItUp(mySettings);
+            });
+        </script>
+    }*@
+</head>
+<body class="c-layout-header-fixed">
+    <header class="c-layout-header c-layout-header-3 c-layout-header-default-mobile">
+        <div class="c-navbar">
+            <div class="container">
+
+                <div class="c-navbar-wrapper clearfix">
+                    <div class="c-brand c-pull-left">
+                        <a href="@Url.Action("Index","Home")" class="c-logo">
+                            <img src="~/Images/logo-1.png" alt="JANGO" class="c-desktop-logo">
+                            <img src="~/Images/logo-1.png" alt="JANGO" class="c-mobile-logo">
+                        </a>
+                        <button class="c-hor-nav-toggler" type="button" data-target=".c-mega-menu">
+                            <span class="c-line"></span>
+                            <span class="c-line"></span>
+                            <span class="c-line"></span>
+                        </button>
+                        <button class="c-search-toggler" type="button">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    @using (Html.BeginForm("Index", "Home", new { area = "" }, FormMethod.Get, new { @class = "c-quick-search" }))
+                    {
+                        <input type="text" id="SearchString" name="SearchString" placeholder="Başlık arayın..." value="" class="form-control" autocomplete="off">
+                        <span class="c-theme-link">&times;</span>
+                    }
+                    <nav class="c-mega-menu c-pull-right c-mega-menu-dark c-mega-menu-dark-mobile c-fonts-uppercase c-fonts-bold">
+                        <!-- BEGIN: MEGA MENU -->
+                        <ul class="nav navbar-nav c-theme-nav">
+                            <li class="c-search-toggler-wrapper">
+                                <a href="#" class="c-btn-icon c-search-toggler"><i class="fa fa-search"></i></a>
+                            </li>
+                            @Html.Partial("_LoginPartial")
+                        </ul>
+                        <!-- END MEGA MENU -->
+                    </nav>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    @if (Request.IsAuthenticated)
+    {
+        @Html.Partial("~/Views/Partials/_NewTitlePartial.cshtml")
+    }
+    @Html.Partial("~/Views/Partials/_AllCategories.cshtml")
+
+
+    <div class="c-layout-page">
+        @RenderSection("breadcrumb", false)
+        <div class="c-content-box c-size-md">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        @RenderBody()
+                    </div>
+                    <div class="col-md-3">
+                        @Html.Partial("~/Views/Partials/Top7Category.cshtml")
+                        <div class="c-content-tab-1 c-theme c-margin-t-30">
+                            <div class="nav-justified">
+                                <ul class="nav nav-tabs nav-justified">
+                                    <li class="active">
+                                        <a href="#titles_of_day" data-toggle="tab">Günün Başlıkları</a>
+                                    </li>
+                                    <li>
+                                        <a href="#titles_of_week" data-toggle="tab">Haftanın Başlıkları</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    @{
+                                        object catID = null;
+                                        if (ViewBag.CategoryId != null)
+                                        {
+                                            catID = (int)ViewBag.CategoryId;
+                                        }
+                                    }
+                                    <div class="tab-pane active" id="titles_of_day">
+                                        @Html.Partial("~/Views/Partials/TopTitleOfDay.cshtml", catID)
+                                    </div>
+                                    <div class="tab-pane" id="titles_of_week">
+                                        @Html.Partial("~/Views/Partials/TopTitleOfWeek.cshtml", catID)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a name="footer"></a>
+    <footer class="c-layout-footer c-layout-footer-3 c-bg-dark">
+        <div class="c-postfooter">
+            <div class="container">
+                <p class="c-font-oswald c-font-14">
+                    Copyright &copy; NeYapsam Inc.
+                </p>
+            </div>
+        </div>
+    </footer>
+    <div class="c-layout-go2top">
+        <i class="icon-arrow-up"></i>
+    </div>
+    <script>
+        $(document).ready(function () {
+            App.init(); // init core
+        });
+    </script>
+    @RenderSection("scripts", required: false)
+    @{
+        Result result = new Result();
+        string swallType = "success";
+        if (TempData["result"] != null)
+        {
+            result = (Result)TempData["result"];
+            swallType = (result.IsSuccess != true) ? "error" : "success";
+            TempData["result"] = null;
+            <script type="text/javascript">
+                $(function () {
+                    swal({
+                        title: "@result.Message",
+                        text: "@result.InnerMessage",
+                        type: "@swallType"
+                    });
+                });
+            </script>
+        }
+    }
+
+</body>
+</html>
