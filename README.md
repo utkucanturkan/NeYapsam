@@ -25,3 +25,11 @@ In the project, user has 3 different roles as admin, user and anonymous. Dependi
 ![NeYapsam Class Diagram](https://raw.githubusercontent.com/utkucanturkan/NeYapsam/master/WebNeYapsam/WebNeYapsam/Files/erdplus-diagram.png)
 
 # User Interface Design
+
+![NeYapsam Class Diagram](https://raw.githubusercontent.com/utkucanturkan/NeYapsam/master/WebNeYapsam/WebNeYapsam/Files/UI-1.png)
+
+![NeYapsam Class Diagram](https://raw.githubusercontent.com/utkucanturkan/NeYapsam/master/WebNeYapsam/WebNeYapsam/Files/UI-2.png)
+
+![NeYapsam Class Diagram](https://raw.githubusercontent.com/utkucanturkan/NeYapsam/master/WebNeYapsam/WebNeYapsam/Files/UI-3.png)
+
+![NeYapsam Class Diagram](https://raw.githubusercontent.com/utkucanturkan/NeYapsam/master/WebNeYapsam/WebNeYapsam/Files/UI-4.png)
