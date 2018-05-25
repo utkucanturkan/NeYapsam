@@ -12,6 +12,4 @@
  - [x] HTML, CSS, JQuery / AJAX
  - [x] Visual Studio 2017
 
-# Installing
-
-The project of source file is "WebNeYapsam.sln" that is in WebNeYapsam folder. To double click the source file and open with Visual Studio 2015, the project will be installed and builded. Related files, source codes, folders, frameworks, scripts, references of NeYapsam will be in right side Solution Explorer in Visual Studio
+# Software Design
