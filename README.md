@@ -8,5 +8,6 @@
  - [x] .Net Framework 4.5
  - [x] ASP.NET MVC 5
  - [x] EntityFramework 6 (ORM)
+ - [x] MySQL
  - [x] HTML, CSS, JQuery / AJAX
  - [x] Visual Studio 2017
