@@ -9,7 +9,7 @@
  - [x] ASP.NET MVC 5
  - [x] EntityFramework 6 (ORM)
  - [x] MySQL
- - [x] HTML, CSS, JQuery / AJAX
+ - [x] HTML, CSS, Bootstrap, JQuery / AJAX
  - [x] Visual Studio 2017
 
 # Software Design
