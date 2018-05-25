@@ -16,8 +16,12 @@
 
 In the project, user has 3 different roles as admin, user and anonymous. Depending on these roles, restrictions and permissions are created for the users. Users must be a member to use the project in more detail. Users have a User role and can now create a title or recommendation, delete or edit their own, evaluate or complain about other data. In addition, users can make arrangements on their own memberships. Admin has the authority to edit, delete and add any kind of data in the system. It also can check on the titles or recommendations that users have complained about. Anonymous people can only view headlines.
 
-> Class Diagram
+### Class Diagram
+
 ![NeYapsam Class Diagram](https://raw.githubusercontent.com/utkucanturkan/NeYapsam/master/WebNeYapsam/WebNeYapsam/Files/ClassDiagram.png)
 
-> ER Diagram
+### ER Diagram
+
 ![NeYapsam Class Diagram](https://raw.githubusercontent.com/utkucanturkan/NeYapsam/master/WebNeYapsam/WebNeYapsam/Files/erdplus-diagram.png)
+
+# User Interface Design
